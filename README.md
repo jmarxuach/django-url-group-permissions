@@ -173,7 +173,7 @@ If you encounter any problems or have questions, please:
 
 ## Authors
 
-- Joan Marxuach - Initial work - [jmarxuach](https://github.com/jmarxuach)
+- Josep Marxuach - Initial work - [jmarxuach](https://github.com/jmarxuach)
 
 ## Acknowledgments
 
