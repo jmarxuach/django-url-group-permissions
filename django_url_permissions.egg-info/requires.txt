@@ -1,0 +1,7 @@
+Django>=3.2
+
+[dev]
+black
+flake8
+pytest
+pytest-django

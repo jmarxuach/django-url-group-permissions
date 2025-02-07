@@ -1,3 +1,33 @@
+Metadata-Version: 2.1
+Name: django-url-permissions
+Version: 1.0
+Summary: A Django package for managing URL-based permissions through user groups with HTTP method support
+Home-page: https://github.com/jmarxuach/django-url-permissions
+Author: Elazos
+Author-email: info@elazos.com
+License: MIT
+Project-URL: Bug Tracker, https://github.com/jmarxuach/django-url-permissions/issues
+Platform: UNKNOWN
+Classifier: Development Status :: 3 - Alpha
+Classifier: Framework :: Django
+Classifier: Framework :: Django :: 3.2
+Classifier: Framework :: Django :: 4.0
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Topic :: Internet :: WWW/HTTP
+Classifier: Topic :: Security
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+Provides-Extra: dev
+License-File: LICENSE
+
 # Django URL Permissions
 
 A Django package that provides a flexible and efficient way to manage URL-based permissions through Django's user groups. This package allows you to control access to specific URLs based on user group membership and HTTP methods.
@@ -194,3 +224,4 @@ If you encounter any problems or have questions, please:
 
 - Thanks to the Django community for the amazing framework
 - Inspired by the need for flexible URL-based permissions in Django applications
+

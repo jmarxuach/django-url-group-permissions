@@ -1,0 +1,131 @@
+{% extends "admin/change_form.html" %}
+{% load i18n %}
+
+{% block after_field_sets %}
+{{ block.super }}
+
+<fieldset class="module aligned">
+    <h2>{% trans 'URL Permissions' %}</h2>
+    
+    <div class="form-row">
+        <div>
+            <div class="related-widget-wrapper">
+                <div class="selector">
+                    <!-- Available permissions -->
+                    <div class="selector-available">
+                        <h2>{% trans 'Available URL permissions' %} <span class="help help-tooltip help-icon" title="{% trans 'This is the list of available URL permissions. You may choose some by selecting them in the box below and then clicking the "Choose" arrow between the two boxes.' %}"></span></h2>
+                        <p class="selector-filter">
+                            <label for="url_permissions_input">
+                                <span class="help-tooltip search-label-icon" title="{% trans 'Type into this box to filter down the list of available URL permissions.' %}"></span>
+                            </label>
+                            <input type="text" placeholder="{% trans 'Filter' %}" id="url_permissions_input">
+                        </p>
+                        <select multiple="multiple" id="available_url_permissions" class="filtered" style="height: 267px;">
+                            {% for perm in available_url_permissions %}
+                                <option value="{{ perm.id }}" title="{{ perm.url }} | {{ perm.http_method }}">{{ perm.url }} | {{ perm.http_method }}</option>
+                            {% endfor %}
+                        </select>
+                        <a title="{% trans 'Click to choose all URL permissions at once.' %}" href="#" id="add_all_url_permissions" class="selector-chooseall">{% trans 'Choose all' %}</a>
+                    </div>
+
+                    <!-- Arrows -->
+                    <ul class="selector-chooser">
+                        <li>
+                            <a title="{% trans 'Choose' %}" href="#" id="add_url_permission" class="selector-add">{% trans 'Choose' %}</a>
+                        </li>
+                        <li>
+                            <a title="{% trans 'Remove' %}" href="#" id="remove_url_permission" class="selector-remove">{% trans 'Remove' %}</a>
+                        </li>
+                    </ul>
+
+                    <!-- Chosen permissions -->
+                    <div class="selector-chosen">
+                        <h2>{% trans 'Chosen URL permissions' %} <span class="help help-tooltip help-icon" title="{% trans 'This is the list of chosen URL permissions. You may remove some by selecting them in the box below and then clicking the "Remove" arrow between the two boxes.' %}"></span></h2>
+                        <select multiple="multiple" id="chosen_url_permissions" name="url_permissions" class="filtered" style="height: 267px;">
+                            {% for perm in chosen_url_permissions %}
+                                <option value="{{ perm.id }}" selected title="{{ perm.url }} | {{ perm.http_method }}">{{ perm.url }} | {{ perm.http_method }}</option>
+                            {% endfor %}
+                        </select>
+                        <a title="{% trans 'Click to remove all chosen URL permissions at once.' %}" href="#" id="remove_all_url_permissions" class="selector-clearall">{% trans 'Remove all' %}</a>
+                    </div>
+                </div>
+            </div>
+            <div class="help">{% trans 'Hold down "Control", or "Command" on a Mac, to select more than one.' %}</div>
+        </div>
+    </div>
+</fieldset>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Filter functionality
+    const filterInput = document.querySelector('#url_permissions_input');
+    filterInput.addEventListener('input', function() {
+        const filter = this.value.toLowerCase();
+        const options = document.querySelectorAll('#available_url_permissions option');
+        
+        options.forEach(option => {
+            const text = option.textContent.toLowerCase();
+            if (text.includes(filter)) {
+                option.style.display = '';
+            } else {
+                option.style.display = 'none';
+            }
+        });
+    });
+
+    function moveSelected(from, to) {
+        const selected = Array.from(from.selectedOptions);
+        selected.forEach(option => {
+            option.selected = true;
+            to.appendChild(option);
+        });
+    }
+
+    document.querySelector('.selector-add').addEventListener('click', (e) => {
+        e.preventDefault();
+        moveSelected(
+            document.getElementById('available_url_permissions'),
+            document.getElementById('chosen_url_permissions')
+        );
+    });
+
+    document.querySelector('.selector-remove').addEventListener('click', (e) => {
+        e.preventDefault();
+        moveSelected(
+            document.getElementById('chosen_url_permissions'),
+            document.getElementById('available_url_permissions')
+        );
+    });
+
+    function moveAll(from, to) {
+        Array.from(from.options).forEach(option => {
+            option.selected = true;
+            to.appendChild(option);
+        });
+    }
+
+    document.querySelector('.selector-chooseall').addEventListener('click', (e) => {
+        e.preventDefault();
+        moveAll(
+            document.getElementById('available_url_permissions'),
+            document.getElementById('chosen_url_permissions')
+        );
+    });
+
+    document.querySelector('.selector-clearall').addEventListener('click', (e) => {
+        e.preventDefault();
+        moveAll(
+            document.getElementById('chosen_url_permissions'),
+            document.getElementById('available_url_permissions')
+        );
+    });
+
+    document.querySelector('form').addEventListener('submit', function() {
+        const chosen = document.getElementById('chosen_url_permissions');
+        Array.from(chosen.options).forEach(option => {
+            option.selected = true;
+        });
+    });
+});
+</script>
+{% endblock %} 
