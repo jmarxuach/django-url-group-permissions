@@ -114,6 +114,7 @@ Users will only be able to access URLs that their groups have been granted permi
 |---------|------|---------|-------------|
 | URL_PERMISSION_REQUIRED | bool | True | Global switch to enable/disable permission checks |
 | URL_PERMISSION_EXEMPT_URLS | list | [] | List of URL prefixes that bypass permission checks |
+| URL_PERMISSION_CHECK_ALL_VIEWS | bool | False | If True, all views require URL permissions unless exempt. If False, only views with @url_permission_required decorator are checked |
 
 ## Model Fields
 
@@ -179,3 +180,24 @@ If you encounter any problems or have questions, please:
 
 - Thanks to the Django community for the amazing framework
 - Inspired by the need for flexible URL-based permissions in Django applications
+
+## Settings
+
+- `URL_PERMISSION_REQUIRED`: Enable/disable URL permission checking globally (default: True)
+- `URL_PERMISSION_EXEMPT_URLS`: List of URL prefixes to exclude from permission checking (default: [])
+- `URL_PERMISSION_CHECK_ALL_VIEWS`: If True, all views require URL permissions unless exempt. If False, only views with @url_permission_required decorator are checked (default: False)
+
+Example:
+```python
+# settings.py
+
+# Check permissions for all views
+URL_PERMISSION_CHECK_ALL_VIEWS = True
+
+# Exempt certain URLs from permission checking
+URL_PERMISSION_EXEMPT_URLS = [
+    '/admin/',
+    '/login/',
+    '/public/',
+]
+```

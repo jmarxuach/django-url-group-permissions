@@ -95,52 +95,37 @@ python manage.py migrate
 
 ## Usage
 
-### Creating Permissions
-
-You can create permissions through the Django admin interface or programmatically:
+### Decorator
 
 ```python
-from django_url_permissions.models import GroupUrlPermissions
-from django.contrib.auth.models import Group
+from django_url_permissions import url_permission_required
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render
 
-# Create a group
-admin_group = Group.objects.create(name='API Admins')
-viewer_group = Group.objects.create(name='API Viewers')
-
-# Grant all HTTP methods access
-GroupUrlPermissions.objects.create(
-    group=admin_group,
-    url='/api/users/',
-    http_method='ALL',
-    description='Full access to users API'
-)
-
-# Grant read-only access
-GroupUrlPermissions.objects.create(
-    group=viewer_group,
-    url='/api/users/',
-    http_method='GET',
-    description='Read-only access to users API'
-)
-```
-
-### Checking Permissions
-
-The middleware automatically checks permissions for all URLs. You can also manually check permissions in your views:
-
-```python
-from django_url_permissions.models import GroupUrlPermissions
-
+@url_permission_required
+@login_required
 def my_view(request):
-    has_access = GroupUrlPermissions.has_url_permission(
-        user=request.user,
-        url='/api/users/',
-        method='GET'
-    )
-    if not has_access:
-        return HttpResponseForbidden()
-    # ... your view logic ...
+    return render(request, 'my_template.html')
 ```
+
+Note: The order of decorators matters. `@url_permission_required` should be placed before `@login_required` to ensure the user is authenticated before checking URL permissions.
+
+## Managing URL Permissions
+
+URL permissions are managed through the Django admin interface, similar to model permissions:
+
+1. Go to Django admin (`/admin/`)
+2. Navigate to "Groups"
+3. Create or edit a group
+4. In the group edit page, you'll find a "URL Permissions" section below the standard model permissions
+5. Use the interface to:
+   - View available URL permissions
+   - Add/remove URL permissions for different HTTP methods
+   - Filter URLs using the search box
+   - Choose multiple permissions at once
+
+Users will only be able to access URLs that their groups have been granted permission to access.
+
 
 ### Supported HTTP Methods
 
@@ -218,7 +203,7 @@ If you encounter any problems or have questions, please:
 
 ## Authors
 
-- Joan Marxuach - Initial work - [jmarxuach](https://github.com/jmarxuach)
+- Josep Marxuach - Initial work - [jmarxuach](https://github.com/jmarxuach)
 
 ## Acknowledgments
 
