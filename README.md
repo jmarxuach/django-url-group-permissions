@@ -18,7 +18,7 @@ A Django package that provides a flexible and efficient way to manage URL-based 
 Install the package using pip:
 
 ```bash
-pip install django-url-permissions
+pip install django-url-group-permissions
 ```
 
 ## Quick Start
@@ -160,7 +160,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 If you encounter any problems or have questions, please:
 
-1. Check the [GitHub Issues](https://github.com/jmarxuach/django-url-permissions/issues) for existing problems or solutions
+1. Check the [GitHub Issues](https://github.com/jmarxuach/django-url-group-permissions/issues) for existing problems or solutions
 2. Create a new issue if your problem is not yet reported
 
 ## Changelog
