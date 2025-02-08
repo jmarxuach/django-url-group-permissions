@@ -28,7 +28,8 @@ from django.http import HttpResponseForbidden
 from django.conf import settings
 from django.utils.deprecation import MiddlewareMixin
 from .models.models import GroupUrlPermissions
-from django.urls import get_resolver
+from django.urls import get_resolver, is_valid_path
+from django.utils.translation import get_language
 
 
 class UrlPermissionMiddleware(MiddlewareMixin):
@@ -46,9 +47,22 @@ class UrlPermissionMiddleware(MiddlewareMixin):
         """Check if the URL is exempt from permission checks."""
         return any(path.startswith(exempt_url) for exempt_url in self.exempt_urls)
 
+    def get_path_without_language(self, path):
+        """Remove language prefix from path if it exists."""
+        if hasattr(settings, 'LANGUAGES'):
+            current_language = get_language()
+            if current_language:
+                language_prefix = f'/{current_language}/'
+                if path.startswith(language_prefix):
+                    return path[len(language_prefix)-1:]
+        return path
+
     def process_request(self, request):
+        # Get path without language prefix for permission checking
+        path_to_check = self.get_path_without_language(request.path)
+        
         # Skip permission check for exempt URLs        
-        if self.is_exempt_url(request.path):
+        if self.is_exempt_url(path_to_check):
             return None
     
         # Skip permission check if URL_PERMISSION_REQUIRED is False
@@ -65,8 +79,13 @@ class UrlPermissionMiddleware(MiddlewareMixin):
 
         # Get the view function
         resolver = get_resolver()
-        resolver_match = resolver.resolve(request.path)
-        view_func = resolver_match.func
+        try:
+            resolver_match = resolver.resolve(path_to_check)
+            view_func = resolver_match.func
+        except:
+            # If resolution fails with the modified path, try original path
+            resolver_match = resolver.resolve(request.path)
+            view_func = resolver_match.func
 
         # Check if permissions should be checked
         check_permissions = (
@@ -83,7 +102,7 @@ class UrlPermissionMiddleware(MiddlewareMixin):
         # Check if user has permission for this URL
         has_permission = GroupUrlPermissions.has_url_permission(
             user=request.user,
-            url=request.path,
+            url=path_to_check,  # Use the path without language prefix
             method=method
         )
 

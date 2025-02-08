@@ -53,8 +53,17 @@ URL_PERMISSION_EXEMPT_URLS = [
     '/media/',
 ]
 
-# Global switch to enable/disable permission checks
-URL_PERMISSION_REQUIRED = True
+# Default behavior (if not set)
+URL_PERMISSION_REQUIRED = True  # All URLs require permissions
+
+# To disable permission checking
+URL_PERMISSION_REQUIRED = False  # No URLs require permissions
+
+# Default behavior (if not set)
+URL_PERMISSION_CHECK_ALL_VIEWS = False  # Only check views with @requires_url_permission decorator
+
+# To check all views
+URL_PERMISSION_CHECK_ALL_VIEWS = True   # Check permissions for all views
 ```
 
 4. Run migrations:
@@ -125,9 +134,10 @@ Users will only be able to access URLs that their groups have been granted permi
 
 | Setting | Type | Default | Description |
 |---------|------|---------|-------------|
-| URL_PERMISSION_REQUIRED | bool | True | Global switch to enable/disable permission checks |
-| URL_PERMISSION_EXEMPT_URLS | list | [] | List of URL prefixes that bypass permission checks |
-| URL_PERMISSION_CHECK_ALL_VIEWS | bool | False | If True, all views require URL permissions unless exempt. If False, only views with @url_permission_required decorator are checked |
+| URL_PERMISSION_REQUIRED | bool | True | Global switch to enable/disable permission checks. When False, the middleware won't check any permissions, useful for development or troubleshooting. |
+| URL_PERMISSION_EXEMPT_URLS | list | [] | List of URL prefixes that bypass permission checks. Example: `['/public/', '/api/docs/']`. URLs starting with these prefixes will be accessible without checking permissions. |
+| URL_PERMISSION_CHECK_ALL_VIEWS | bool | False | Controls permission checking strategy. When False (default), only views decorated with @url_permission_required need permissions. When True, all views require permissions unless explicitly exempted with @exempt_url_permission. |
+
 
 ## Model Fields
 
@@ -165,12 +175,15 @@ If you encounter any problems or have questions, please:
 
 ## Changelog
 
-### 1.0.0 (Initial Release)
+### 1.0.1 (Initial Release)
 - Basic URL permission functionality
 - Group-based permission management
 - HTTP method support
 - Middleware implementation
 - Admin interface integration
+
+### 1.0.2 (2025-02-08)
+- Added support multiple languages in URLs
 
 ## Authors
 

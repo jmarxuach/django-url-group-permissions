@@ -25,19 +25,29 @@
 # Intellectual property of IT ELAZOS SL.
 
 from django.contrib import admin
-from django.urls import get_resolver
-from django.utils.translation import gettext_lazy as _
+from django.urls import URLPattern, URLResolver
+from django.conf import settings
 from .models import *
 from django.contrib.auth.admin import GroupAdmin
 from django.contrib.auth.models import Group
 from django.contrib import admin
 from .models import GroupUrlPermissions
+from django.utils.translation import gettext_lazy as _
 
 
 class CustomGroupAdmin(GroupAdmin):
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
         return form
+
+    def get_clean_url(self, url_path):
+        """Remove language prefix if present and clean the URL path."""
+        if hasattr(settings, 'LANGUAGES'):
+            for lang_code, _ in settings.LANGUAGES:
+                prefix = f'{lang_code}/'
+                if url_path.startswith(prefix):
+                    return url_path[len(prefix):]
+        return url_path
 
     def change_view(self, request, object_id, form_url='', extra_context=None):
         extra_context = extra_context or {}
@@ -49,34 +59,56 @@ class CustomGroupAdmin(GroupAdmin):
             # Get chosen URL permissions
             chosen_url_permissions = GroupUrlPermissions.objects.filter(group=group)
             
-            # Get all URL patterns from Django resolver
-            resolver = get_resolver()
-            available_urls = []
-            
             # Get HTTP methods from model
             http_methods = [method[0] for method in GroupUrlPermissions.HTTP_METHODS]
             
-            for pattern in resolver.url_patterns:
-                if hasattr(pattern, 'pattern'):
-                    url_path = str(pattern.pattern)
-                    # Create entries for each HTTP method
+            # Get all URLs using the recursive method
+            available_urls = set()
+            urlconf = __import__(settings.ROOT_URLCONF, {}, {}, [''])
+            
+            def list_urls(patterns, acc=None):
+                if acc is None:
+                    acc = []
+                if not patterns:
+                    return
+                pattern = patterns[0]
+                if isinstance(pattern, URLPattern):
+                    url_path = ''.join(acc + [str(pattern.pattern)])
+                    # Clean URL path
+                    clean_url = self.get_clean_url(url_path)
+                    # Add all HTTP methods for user-defined URLs
                     for method in http_methods:
-                        available_urls.append({
-                            'id': f"{url_path}|{method}",
-                            'url': url_path,
-                            'http_method': method,
-                        })
+                        available_urls.add((clean_url, method))
+                            
+                elif isinstance(pattern, URLResolver):
+                    yield from list_urls(pattern.url_patterns, acc + [str(pattern.pattern)])
+                yield from list_urls(patterns[1:], acc)
+            
+            # Process all URL patterns
+            for _ in list_urls(urlconf.urlpatterns):
+                pass
+            
+            # Convert set to list of dictionaries
+            available_urls = [
+                {
+                    'id': f"{url}|{method}",
+                    'url': url,
+                    'http_method': method,
+                }
+                for url, method in available_urls
+            ]
             
             # Filter out URLs that are already chosen
             chosen_url_methods = []
             for perm in chosen_url_permissions:
+                clean_url = self.get_clean_url(perm.url)
                 chosen_url_methods.append({
-                    'id': f"{perm.url}|{perm.http_method}",
-                    'url': perm.url,
+                    'id': f"{clean_url}|{perm.http_method}",
+                    'url': clean_url,
                     'http_method': perm.http_method,
                 })       
 
-             # Create a set of chosen IDs for efficient lookup
+            # Create a set of chosen IDs for efficient lookup
             chosen_ids = {item['id'] for item in chosen_url_methods}
 
             available_url_permissions = [
@@ -93,7 +125,6 @@ class CustomGroupAdmin(GroupAdmin):
             request, object_id, form_url, extra_context=extra_context,
         )
     
-
     def save_model(self, request, obj, form, change):
         super().save_model(request, obj, form, change)
         
@@ -107,9 +138,11 @@ class CustomGroupAdmin(GroupAdmin):
             for perm_id in chosen_permissions:
                 if perm_id:  # Only process non-empty values
                     url, method = perm_id.split('|')
+                    # Store URL without language prefix
+                    clean_url = self.get_clean_url(url)
                     GroupUrlPermissions.objects.create(
                         group=obj,
-                        url=url,
+                        url=clean_url,
                         http_method=method
                     )
                 
