@@ -88,3 +88,4 @@ coverage.xml
 cover/
 django_url_group_permissions.egg-info/SOURCES.txt
 /django_url_group_permissions.egg-info
+/django_url_group_permissions/migrations
