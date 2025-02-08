@@ -165,7 +165,7 @@ If you encounter any problems or have questions, please:
 
 ## Changelog
 
-### 0.1.0 (Initial Release)
+### 1.0.0 (Initial Release)
 - Basic URL permission functionality
 - Group-based permission management
 - HTTP method support
