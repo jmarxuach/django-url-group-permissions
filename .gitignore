@@ -86,5 +86,5 @@ coverage.xml
 .hypothesis/
 .pytest_cache/
 cover/
-django_url_permissions.egg-info/SOURCES.txt
-/django_url_permissions.egg-info
+django_url_group_permissions.egg-info/SOURCES.txt
+/django_url_group_permissions.egg-info

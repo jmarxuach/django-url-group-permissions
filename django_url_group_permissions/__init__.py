@@ -21,10 +21,10 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 #
-# This source code is part of the "django_url_permissions" project.
+# This source code is part of the "django_url_group_permissions" project.
 # Intellectual property of IT ELAZOS SL.
 
-default_app_config = 'django_url_permissions.apps.DjangoUrlPermissionsConfig'
+default_app_config = 'django_url_group_permissions.apps.DjangoUrlPermissionsConfig'
 
 from .decorators import url_permission_required
 

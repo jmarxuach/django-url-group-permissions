@@ -23,12 +23,12 @@ pip install django-url-group-permissions
 
 ## Quick Start
 
-1. Add 'django_url_permissions' to your INSTALLED_APPS:
+1. Add 'django_url_group_permissions' to your INSTALLED_APPS:
 
 ```python
 INSTALLED_APPS = [
     ...
-    'django_url_permissions',
+    'django_url_group_permissions',
 ]
 
 ```
@@ -38,7 +38,7 @@ INSTALLED_APPS = [
 ```python
 MIDDLEWARE = [
     ...
-    'django_url_permissions.middleware.UrlPermissionMiddleware',
+    'django_url_group_permissions.middleware.UrlPermissionMiddleware',
 ]
 ```
 
@@ -79,7 +79,7 @@ There are two ways to implement URL permissions in your project:
    
    If `URL_PERMISSION_CHECK_ALL_VIEWS = False`, you can use the decorator to specify which views require URL permissions:
    ```python
-   from django_url_permissions import url_permission_required
+   from django_url_group_permissions import url_permission_required
    from django.contrib.auth.decorators import login_required
    from django.shortcuts import render
 

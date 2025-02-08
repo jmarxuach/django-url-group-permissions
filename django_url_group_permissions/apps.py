@@ -1,7 +1,7 @@
 # Copyright (c) 2025 IT ELAZOS SL
 # Intellectual property of IT ELAZOS SL. All rights reserved.
 #
-# This source code is part of the "django_url_permissions" project.
+# This source code is part of the "django_url_group_permissions" project.
 # Unauthorized use, reproduction, distribution, modification, or transmission
 # of this code, in whole or in part, is strictly prohibited without the express
 # written consent of IT ELAZOS SL.
@@ -13,7 +13,7 @@ from django.apps import AppConfig
 
 
 class DjangoUrlPermissionsConfig(AppConfig):
-    name = 'django_url_permissions'
+    name = 'django_url_group_permissions'
     verbose_name = "Django URL Permissions"
 
     def ready(self):
