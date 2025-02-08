@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 setup(
-    name="django-url-group-permissions",  # Replace with your package name
+    name="django_url_group_permissions",  # Replace with your package name
     version="1.0.0",  # Initial version
     author="Elazos",  # Your name or organization
     author_email="info@elazos.com",  # Your email
