@@ -65,20 +65,33 @@ python manage.py migrate
 
 ## Usage
 
-### Decorator
+There are two ways to implement URL permissions in your project:
 
-```python
-from django_url_permissions import url_permission_required
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
+1. **Global Permission Check** (Recommended for new projects)
+   
+   Set in your settings.py:
+   ```python
+   URL_PERMISSION_CHECK_ALL_VIEWS = True
+   ```
+   This will enforce URL permissions on all views automatically (except exempt URLs).
 
-@url_permission_required
-@login_required
-def my_view(request):
-    return render(request, 'my_template.html')
-```
+2. **Decorator Approach** (For selective permission checking)
+   
+   If `URL_PERMISSION_CHECK_ALL_VIEWS = False`, you can use the decorator to specify which views require URL permissions:
+   ```python
+   from django_url_permissions import url_permission_required
+   from django.contrib.auth.decorators import login_required
+   from django.shortcuts import render
+
+   @url_permission_required
+   @login_required
+   def my_view(request):
+       return render(request, 'my_template.html')
+   ```
 
 Note: The order of decorators matters. `@url_permission_required` should be placed before `@login_required` to ensure the user is authenticated before checking URL permissions.
+
+In both cases, you'll need to configure the permissions for each group through the Django admin interface.
 
 ## Managing URL Permissions
 
@@ -138,19 +151,6 @@ Contributions are welcome! Here's how you can help:
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-### Development Setup
-
-```bash
-# Clone the repository
-git clone https://github.com/jmarxuach/django-url-permissions.git
-cd django-url-permissions
-
-# Install development dependencies
-pip install -e ".[dev]"
-
-# Run tests
-pytest
-```
 
 ## License
 
