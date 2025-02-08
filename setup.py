@@ -6,7 +6,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name="django_url_group_permissions",  # Replace with your package name
-    version="1.0.1",  # Initial version
+    version="1.0.2",  # Initial version
     author="Elazos",  # Your name or organization
     author_email="info@elazos.com",  # Your email
     description="A Django package for managing URL-based permissions through user groups with HTTP method support",
